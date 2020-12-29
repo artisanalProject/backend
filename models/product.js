@@ -1,0 +1,21 @@
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema
+
+var productSchema = new Schema(
+ {
+  name: { type: String, required:true },
+  price:    { type: Number, required:true},
+  ref: { type: String, required:true },
+  quantity:    { type: Number, required:true},
+  images: { type: String, required:true },
+  status:    { type: String, required:true},
+  createdByAdmin:    { type: Boolean, required:true},
+  tva: { type: Number, required:true },
+  taxe:    { type: Number, required:true},
+  remise: { type: Number, required:true },
+  categorie:   {type: Schema.Types.ObjectId, ref: 'Categorie'},
+  collections:  {type: Schema.Types.ObjectId, ref: 'Collection'},
+  artisant:  {type: Schema.Types.ObjectId, ref: 'Artisant'}
+});
+
+module.exports =  mongoose.model('Product', productSchema); 
