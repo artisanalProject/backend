@@ -8,11 +8,10 @@ var artisantSchema = new Schema(
   phoneNumber: { type: String, required:true },
   address:    { type: String, required:true},
   storeName: { type: String, required:true },
-  TypeOfWork:    { type: String, required:true},
-  date: { type: Date, required:true },
+  typeOfWork:    { type: String, required:true},
   codePostale:    { type: String, required:true},
   cin: { type: String, required:true },
-  creationDate:   {type: Schema.Types.ObjectId, ref: 'Categorie'},
+  creationDate:   {type: Date,  required:true},
 });
 
 module.exports =  mongoose.model('Artisant', artisantSchema); 
