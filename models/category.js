@@ -6,10 +6,10 @@ const MarqueSchema = new Schema({
     required: true
   },
 })
-var categorySchema = new Schema(
+const categorySchema = new Schema(
  {
   name: { type: String, required:true },
   marque : [MarqueSchema],
 });
 
-module.exports =  mongoose.model('Category', categorySchema); 
+module.exports =  mongoose.model('Category', categorySchema);

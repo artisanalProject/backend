@@ -10,12 +10,13 @@ var productSchema = new Schema(
   images: {  type: [String], required:true },
   status:    { type: String, required:true},
   createdByAdmin:    { type: Boolean, required:true},
+  topProduct:    { type: Boolean, required:true},
   tva: { type: Number, required:true },
   taxe:    { type: Number, required:true},
   remise: { type: Number, required:true },
   creationDate: { type: Date, required:true },
-  categorie:   {type: Schema.Types.ObjectId, ref: 'Categorie'},
-  marque:   {type: Schema.Types.ObjectId, ref: 'Category.Marque'},
+  category:   {type: Schema.Types.ObjectId, ref: 'Category'},
+  marque:   {type: Schema.Types.ObjectId, ref: 'Marque'},
   collections:  {type: Schema.Types.ObjectId, ref: 'Collection', required:false},
   artisant:  {type: Schema.Types.ObjectId, ref: 'Artisant'}
 });

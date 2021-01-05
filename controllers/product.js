@@ -12,10 +12,11 @@ exports.addProduct = (req,res,next)=>{
         tva:req.body.tva,
         taxe:req.body.taxe,
         remise:req.body.remise,
-        categorie:req.body.category,
+        category:req.body.category,
         marque:req.body.marque,
         collections:req.body.collections,
         artisant:req.body.artisant,
+        topProduct:req.body.topProduct,
         creationDate: Date.now()
     })
     if(req.files!=undefined){
@@ -30,6 +31,7 @@ exports.addProduct = (req,res,next)=>{
     product.save().then(product=>{
         res.json(product)
     }).catch(error => {
+      console.log(error);
       res.status(500).json({
           message: "failed to create a produuct"
       });
@@ -37,13 +39,27 @@ exports.addProduct = (req,res,next)=>{
     }
 
   exports.getAllProducts = (req, res, next) => {
-      Product.find().populate('categorie artisant').exec()
+      Product.find().populate('artisant category').exec()
         .then(products => {
           res.status(200).json(products);
         })
         .catch(error => {
+          console.log(error);
           res.status(500).json({
               message: "Fetching list of products failed!"
+           
           });
       });
-    };
+    }; 
+    exports.deletProduct = (req, res, next) => {
+      Product.findByIdAndDelete(req.params.id).exec()
+        .then(() => {
+          res.status(200).json({message:"deleted"});
+        })
+        .catch(error => {
+          console.log(error);
+          res.status(500).json({
+              message: "failed to delete"
+          });
+      });
+    }; 
