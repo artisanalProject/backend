@@ -4,7 +4,7 @@ var Schema = mongoose.Schema
 var collectionsSchema = new Schema(
  {
   name: { type: String, required:true },
-  description:    { type: Number, required:true},
+  description:    { type: String, required:true},
   products:   [{type: Schema.Types.ObjectId, ref: 'Product'}]
 });
 

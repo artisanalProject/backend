@@ -10,4 +10,16 @@ exports.addCategory = (req,res,next)=>{
     })
     }
 
-    
+    exports.getCategories = (req, res, next) => {
+        Categorie.find()
+          .then(categories => {
+            res.status(200).json(categories);
+          })
+          .catch(error => {
+            console.log(error);
+            res.status(500).json({
+                message: "Fetching list of categories failed!"
+             
+            });
+        });
+      }; 

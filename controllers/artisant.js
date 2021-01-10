@@ -4,7 +4,8 @@ exports.addArtisant = (req,res,next)=>{
     const artisant = new Artisant({
         name : req.body.name,
         email: req.body.email,
-        phoneNumber : req.body.address,
+        phoneNumber : req.body.phoneNumber,
+        password: req.body.password,
         address: req.body.address,
         storeName: req.body.storeName,
         typeOfWork: req.body.typeOfWork,
