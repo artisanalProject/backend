@@ -21,3 +21,16 @@ exports.addArtisant = (req,res,next)=>{
         console.log(err);
     })
     }
+
+    exports.getArtisant = (req,res,next)=>{
+        Artisant.find().then(artisant=>{
+            res.status(200).json(artisant);
+        })
+        .catch(error => {
+          console.log(error);
+          res.status(500).json({
+              message: "Fetching list of artisant failed!"
+           
+          });
+      });
+    }
