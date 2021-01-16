@@ -25,8 +25,7 @@ exports.addAdmin = (req,res,next)=>{
         if(doc!=null)
         res.json("account already exist")
         else{
-           // bcrypt.hash(req.body.password, 10, function(err, hash) {
-                const admin = new Admin(req.body)
+           const admin = new Admin(req.body)
                 admin.password=encrypt(req.body.password)
                 admin.save().then(ad=>{
                   res.json(ad)
@@ -34,7 +33,6 @@ exports.addAdmin = (req,res,next)=>{
                     res.render(err)
                     console.log(err);
                 })
-           // })
         }
     })
 }
@@ -44,11 +42,7 @@ exports.addAdmin = (req,res,next)=>{
 exports.loginAdmin = (req,res,next)=>{
     Admin.findOne({email:req.body.email},function(err,doc){
         if(doc!=null){
-           var pwd=""+doc.password;
-            
-            console.log(decrypt(doc.password));
-            
-             if(req.body.password==decrypt(doc.password)) {
+           if(req.body.password==decrypt(doc.password)) {
                 const token = jwt.sign(
                   {
                     email: doc.email,
