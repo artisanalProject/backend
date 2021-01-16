@@ -1,18 +1,35 @@
 const Artisant = require('../models/artisant')
-const bcrypt = require('bcrypt');
 const jwt= require('jsonwebtoken');
 const nodemailer = require("nodemailer");
+var crypto = require('crypto');
+var algorithm = 'aes-256-ctr';
+var password ='d6F3Efeq';
+
+function encrypt(text){
+    var cipher = crypto.createCipher(algorithm,password)
+    var crypted = cipher.update(text,'utf8','hex')
+    crypted += cipher.final('hex');
+    return crypted;
+  }
+   
+  function decrypt(text){
+    var decipher = crypto.createDecipher(algorithm,password)
+    var dec = decipher.update(text,'hex','utf8')
+    dec += decipher.final('utf8');
+    return dec;
+  }
+
 exports.addArtisant = (req,res,next)=>{
     Artisant.findOne({email:req.body.email},function(err,doc){        
         if(doc!=null)
         res.json("account already exist")
         else{
-            bcrypt.hash(req.body.password, 10, function(err, hash) {
-                const artisant = new Artisant({
+            
+              const artisant = new Artisant({
                     name : req.body.name,
                     email: req.body.email,
                     phoneNumber : req.body.phoneNumber,
-                    password: hash,
+                    password: encrypt(req.body.password),
                     address: req.body.address,
                     storeName: req.body.storeName,
                     typeOfWork: req.body.typeOfWork,
@@ -27,7 +44,7 @@ exports.addArtisant = (req,res,next)=>{
                     res.render(err)
                     console.log(err);
                 })
-            })
+            
         }
     })
 }
@@ -35,8 +52,7 @@ exports.addArtisant = (req,res,next)=>{
 exports.loginArtisan = (req,res,next)=>{
     Artisant.findOne({email:req.body.email},function(err,doc){
         if(doc!=null){
-         bcrypt.compare(req.body.password, doc.password, function(err, result) {
-              if(result) {
+              if(decrypt(doc.password)==req.body.password) {
                 const token = jwt.sign(
                   {
                     email: doc.email,
@@ -63,7 +79,7 @@ exports.loginArtisan = (req,res,next)=>{
               } else {
                  return res.json("verify email or password")
               } 
-            });
+           
         }
         else{
           return  res.json("verify email or password")
