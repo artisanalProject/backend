@@ -24,7 +24,6 @@ exports.addArtisant = (req,res,next)=>{
                 artisant.save().then(artisant=>{
                   res.json(artisant)
                 }).catch(err=>{
-                    console.log("aaaa");
                     res.render(err)
                     console.log(err);
                 })
