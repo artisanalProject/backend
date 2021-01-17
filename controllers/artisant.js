@@ -119,3 +119,16 @@ let transporter = nodemailer.createTransport({
   
 }
 
+exports.NotActivatedAccounts = (req,res,next)=>{
+  Artisant.find({accountStatus:"not activated"}).exec()
+        .then(docs => {
+          res.status(200).json(docs);
+        })
+        .catch(error => {
+          console.log(error);
+          res.status(500).json({
+              message: "No pending requests!"
+           
+          });
+      });
+}
