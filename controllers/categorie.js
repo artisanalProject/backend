@@ -1,4 +1,6 @@
 const Categorie = require('../models/category')
+const Marque = require('../models/marque')
+const Product = require('../models/product')
 
 exports.addCategory = (req,res,next)=>{
     const category = new Categorie(req.body)
@@ -25,16 +27,18 @@ exports.addCategory = (req,res,next)=>{
       }; 
 
       exports.deleteCategory = (req, res, next) => {
-        Categorie.findByIdAndDelete(req.params.id).exec()
-          .then(() => {
-            res.status(200).json({message:"deleted"});
-          })
-          .catch(error => {
-            console.log(error);
-            res.status(500).json({
-                message: "failed to delete"
-            });
-        });
+       Categorie.findById(req.params.id).then(category=>{
+         Marque.findOne({category:category._id}).then(marque=>{
+          marque.remove({})
+         })
+         
+         category.remove({})
+         Product.updateOne({category:req.params.id}, {$unset: {field: 1 }}, callback);
+       }).then(()=>{ res.status(200).json({message:"deleted"});})
+       .catch(err=>{
+         res.status(500).json({message:"err"+err})
+       })
+
       }; 
 
       exports.updateCategory = (req,res,next)=>{
