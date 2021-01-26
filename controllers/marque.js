@@ -11,7 +11,7 @@ exports.addMarque = (req,res,next)=>{
     })
     }
     exports.getMarque = (req, res, next) => {
-        Marque.find()
+        Marque.find().populate("category").exec()
           .then(marques => {
             res.status(200).json(marques);
           })
@@ -40,9 +40,9 @@ exports.addMarque = (req,res,next)=>{
     }
 
     exports.deleteMarque = (req, res, next) => {
-        Marque.findByIdAndDelete(req.params.id).exec()
-          .then(() => {
-            res.status(200).json({message:"deleted"});
+        Marque.findById(req.params.id)
+          .then(marque => {
+            marque.remove({}).then(()=>{ res.status(200).json({message:"deleted"});})
           })
           .catch(error => {
             console.log(error);

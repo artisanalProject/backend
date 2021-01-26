@@ -1,20 +1,22 @@
 const Product = require('../models/product')
 
 exports.addProduct = (req,res,next)=>{
-  console.log("aaa");
+  
     const product = new Product({
         name:req.body.name,
         price:req.body.prix,
         ref:req.body.reference,
         quantity:req.body.quantity,
-        status: "yes",
+        status: "en stock",
         createdByAdmin:true,
         category:req.body.category,
         marque:req.body.marque,
         collections:req.body.collections,
         artisant:req.body.artisant,
-        topProduct:true,
+        topProduct:false,
         description:req.body.description,
+        remise :  req.body.remise,
+        new:req.body.new,
         creationDate: Date.now()
     })
     if(req.files!=undefined){
@@ -27,10 +29,11 @@ exports.addProduct = (req,res,next)=>{
       }
       
     product.save().then(product=>{
+      console.log(product);
         res.json(product)
     }).catch(error => {
-      console.log("aaa");
-      console.log(error);
+      
+    console.log(error);
       res.status(500).json({
           message: "failed to create a produuct"
       });
@@ -76,59 +79,29 @@ exports.addProduct = (req,res,next)=>{
       });
     }; 
     exports.updateProduct = async (req, res, next) => {
-      const id = req.body.id
-      const updatedName = req.body.name;
-      const updatedReference = req.body.reference;
-      const updatedDescription = req.body.description;
-      const updatedPrice = parseFloat(req.body.price);
-      const updatedStatus =  req.body.status;
-      const updatedProvider = JSON.parse(req.body.provider);
-      const updatedCategory = await Category.findById(JSON.parse(req.body.category)) ;
-     // const updatedsubCategory = req.body.subCategory;
-      const updatedQuantity = parseInt(req.body.quantity)
-      Product.findById(id)
-        .then(product => {
-          
-          product.name = updatedName;
-          product.reference = updatedReference;
-          product.description = updatedDescription;
-          product.price = updatedPrice;
-          product.status = updatedStatus;
-          product.provider= updatedProvider;
-          product.category = updatedCategory._id;
-         // product.subCategory= updatedsubCategory;
-          product.quantity = updatedQuantity;
-          if(req.files!=undefined){
-  
-            
-            let tabImage=[]
-            req.files.forEach(element => {
-  
-              
-              tabImage.push(element.path)
-            });
-            oldImages=JSON.parse(req.body.old);
-            oldImages.forEach(element => {
-   
-              
-              tabImage.push(element)
-            });
-            
-           product.image=tabImage
-          }
-          
-          
-          
-          return product.save();
-        })
-        .then(result => {
-   
-          res.status(200).json({ message: "Update successful!" });
-        })
-        .catch(error => {
-          console.log(error);
-          res.status(500).json({
-              message: "Couldn't udpate product!"+error
-          });
-      });
-    };
+      console.log(req.files);
+      if(req.files!=undefined){
+           
+           req.files.forEach(element => {  
+      
+     Product.findByIdAndUpdate(req.params.id,req.body, {$push :{images:element.path}}).then(
+       ()=>{
+         res.status(200).json({message:"updated"})
+       }
+     ).catch(error=>{
+      res.status(500).json({
+        message: "failed to delete"
+    });
+     })
+    });
+    }
+  }
+  exports.findProductByCategory = (req, res, next) => {
+  Product.find({category:req.params.idCategory}).then(products=>{
+    res.status(200).json(products)
+  }).catch(err=>{
+    res.status(500).json({
+      message: "no product found"
+    })
+  })
+  }
