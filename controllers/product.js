@@ -15,6 +15,8 @@ exports.addProduct = (req,res,next)=>{
         artisant:req.body.artisant,
         topProduct:false,
         description:req.body.description,
+        remise :  req.body.remise,
+        new:req.body.new,
         creationDate: Date.now()
     })
     if(req.files!=undefined){
@@ -27,10 +29,11 @@ exports.addProduct = (req,res,next)=>{
       }
       
     product.save().then(product=>{
+      console.log(product);
         res.json(product)
     }).catch(error => {
       
-    
+    console.log(error);
       res.status(500).json({
           message: "failed to create a produuct"
       });
@@ -95,7 +98,6 @@ exports.addProduct = (req,res,next)=>{
   }
   exports.findProductByCategory = (req, res, next) => {
   Product.find({category:req.params.idCategory}).then(products=>{
-    console.log(products);
     res.status(200).json(products)
   }).catch(err=>{
     res.status(500).json({
