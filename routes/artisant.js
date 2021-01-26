@@ -6,4 +6,5 @@ router.post('/addArtisant',artisantController.addArtisant)
 router.post('/loginArtisant',artisantController.loginArtisan)
 router.get('/activateAccount/:id',token.ensureToken,artisantController.activateAccount)
 router.get('/NotActivatedAccounts',token.ensureToken,artisantController.NotActivatedAccounts)
+router.get('/getArtisant',artisantController.getArtisant)
 module.exports = router
