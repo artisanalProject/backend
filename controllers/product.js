@@ -11,7 +11,7 @@ exports.addProduct = (req,res,next)=>{
         createdByAdmin:true,
         category:req.body.category,
         marque:req.body.marque,
-        collections:req.body.collections,
+      //  collections:req.body.collections,
         artisant:req.body.artisant,
         topProduct:false,
         description:req.body.description,

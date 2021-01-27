@@ -17,8 +17,9 @@ var productSchema = new Schema(
   creationDate: { type: Date, required:true },
   category:   {type: Schema.Types.ObjectId, ref: 'Category', required:false},
   marque:   {type: Schema.Types.ObjectId, ref: 'Marque', required:false},
-  collections:  {type: Schema.Types.ObjectId, ref: 'Collection', required:false},
-  artisant:  {type: Schema.Types.ObjectId, ref: 'Artisant',required:false}
+  //collections:  {type: Schema.Types.ObjectId, ref: 'Collection', required:false},
+  artisant:  {type: Schema.Types.ObjectId, ref: 'Artisant',required:false},
+  sellingNumber:{type:Number,default:0}
 });
 
 module.exports =  mongoose.model('Product', productSchema); 
