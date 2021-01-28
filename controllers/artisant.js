@@ -1,4 +1,5 @@
 const Artisant = require('../models/artisant')
+const Product = require('../models/product')
 const jwt= require('jsonwebtoken');
 const nodemailer = require("nodemailer");
 var crypto = require('crypto');
@@ -124,7 +125,46 @@ exports.NotActivatedAccounts = (req,res,next)=>{
         .then(docs => {
           res.status(200).json(docs);
     })
+}
+exports.RequestProduct = (req,res,next)=>{
+console.log(req.body);
+
+  
+  const product = new Product({
+    name:req.body.name,
+    price:req.body.prix,
+    ref:req.body.reference,
+    quantity:req.body.quantity,
+    status: "Requested",
+    createdByAdmin:true,
+    category:req.body.category,
+    marque:req.body.marque,
+    artisant:req.body.artisan,
+    topProduct:false,
+    description:req.body.description,
+    remise :  req.body.remise,
+    creationDate: Date.now()
+})
+if(req.files!=undefined){
+  
+    let tabImage=[]
+    req.files.forEach(element => {
+      tabImage.push(element.path)
+    });
+    product.images=tabImage
   }
+  
+product.save().then(product=>{
+  console.log(product);
+    res.json(product)
+}).catch(error => {
+  
+console.log(error);
+  res.status(500).json({
+      message: "failed to create a produuct"
+  });
+})
+}
   exports.getArtisant = (req,res,next)=>{
     Artisant.find().then(artisant=>{
         res.status(200).json(artisant);

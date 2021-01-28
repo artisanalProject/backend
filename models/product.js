@@ -12,7 +12,7 @@ var productSchema = new Schema(
   new:    { type: Boolean, required:false},
   images: {  type: [String], required:true },
   status:    { type: String, required:true},
-  createdByAdmin:    { type: Boolean, required:true},
+  createdByAdmin:    { type: Boolean, required:false},
   topProduct:    { type: Boolean, required:true},
   creationDate: { type: Date, required:true },
   category:   {type: Schema.Types.ObjectId, ref: 'Category', required:false},
