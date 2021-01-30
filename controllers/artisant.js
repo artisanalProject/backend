@@ -136,7 +136,7 @@ console.log(req.body);
     ref:req.body.reference,
     quantity:req.body.quantity,
     status: "Requested",
-    createdByAdmin:true,
+    createdByAdmin:false,
     category:req.body.category,
     marque:req.body.marque,
     artisant:req.body.artisan,

@@ -9,7 +9,7 @@ var productSchema = new Schema(
   ref: { type: String, required:true },
   quantity:    { type: Number, required:true},
   remise:    { type: Number, required:false},
-  new:    { type: Boolean, required:false},
+  //new:    { type: Boolean, required:false},
   images: {  type: [String], required:true },
   status:    { type: String, required:true},
   createdByAdmin:    { type: Boolean, required:false},

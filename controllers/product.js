@@ -80,20 +80,50 @@ exports.addProduct = (req,res,next)=>{
     }; 
     exports.updateProduct = async (req, res, next) => {
       console.log(req.files);
-      if(req.files!=undefined){
+      oldImages=JSON.parse(req.body.oldImages)
+     
+      // req.body.oldImages.forEach(element => {
+      //   console.log(element);
+        
+      // });
+      let paths = [];
+      if(oldImages.length>0){
+        oldImages.forEach(element => {
+          paths.push(element)
+        });
+          }
+      if(req.files){
            
            req.files.forEach(element => {  
-      
-     Product.findByIdAndUpdate(req.params.id,req.body, {$push :{images:element.path}}).then(
+             paths.push(element.path)
+             
+          });
+          
+   console.log(paths);
+   
+          
+     Product.findByIdAndUpdate(req.params.id,{images:paths}).then(
        ()=>{
-         res.status(200).json({message:"updated"})
+        Product.findByIdAndUpdate(req.params.id,req.body).then(
+          ()=>{ res.status(200).json({
+            message: "updated"
+        });}
+        ).catch(error=>{
+          console.log(error);
+          
+         res.status(500).json({
+           message: "failed to delete"
+       });
        }
+        )}
      ).catch(error=>{
+       console.log(error);
+       
       res.status(500).json({
         message: "failed to delete"
     });
      })
-    });
+   
     }
   }
   exports.findProductByCategory = (req, res, next) => {
