@@ -6,7 +6,7 @@ exports.addProduct = (req,res,next)=>{
         name:req.body.name,
         price:req.body.prix,
         ref:req.body.reference,
-        quantity:req.body.quantity,
+        stock:req.body.stock,
         status: "en stock",
         createdByAdmin:true,
         category:req.body.category,
