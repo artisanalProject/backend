@@ -134,7 +134,7 @@ console.log(req.body);
     name:req.body.name,
     price:req.body.prix,
     ref:req.body.reference,
-    quantity:req.body.quantity,
+    stock:req.body.stock,
     status: "Requested",
     createdByAdmin:false,
     category:req.body.category,

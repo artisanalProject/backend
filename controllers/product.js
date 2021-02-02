@@ -12,7 +12,7 @@ exports.addProduct = (req,res,next)=>{
         category:req.body.category,
         marque:req.body.marque,
       //  collections:req.body.collections,
-        artisant:req.body.artisant,
+      //  artisant:req.body.artisant,
         topProduct:false,
         description:req.body.description,
         remise :  req.body.remise,
@@ -80,6 +80,8 @@ exports.addProduct = (req,res,next)=>{
     }; 
     exports.updateProduct = async (req, res, next) => {
       console.log(req.files);
+      console.log(req.body);
+      
       oldImages=JSON.parse(req.body.oldImages)
      
       // req.body.oldImages.forEach(element => {

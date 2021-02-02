@@ -14,7 +14,7 @@ var productSchema = new Schema(
   images: {  type: [String], required:true },
   status:    { type: String, required:true},
   createdByAdmin:    { type: Boolean, required:false},
-  topProduct:    { type: Boolean, required:true},
+  topProduct:    { type: Boolean, default:false},
   creationDate: { type: Date, required:true },
   category:   {type: Schema.Types.ObjectId, ref: 'Category', required:false},
   marque:   {type: Schema.Types.ObjectId, ref: 'Marque', required:false},
