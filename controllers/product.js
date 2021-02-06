@@ -41,7 +41,7 @@ exports.addProduct = (req,res,next)=>{
     }
 
   exports.getAllProducts = (req, res, next) => {
-      Product.find().populate('artisant category').exec()
+      Product.find().populate('artisant category marque').exec()
         .then(products => {
           res.status(200).json(products);
         })
