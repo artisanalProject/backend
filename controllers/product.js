@@ -137,3 +137,22 @@ exports.addProduct = (req,res,next)=>{
     })
   })
   }
+
+
+exports.refuseProduct=(req,res,next)=>{
+  Product.findByIdAndUpdate(req.params.id,{status:"Refused"}).then(
+    ()=>{
+      res.json("product refused")
+    }).catch(err=>{
+      res.json(err)
+    })
+}
+
+exports.acceptProduct=(req,res,next)=>{
+  Product.findByIdAndUpdate(req.params.id,{status:"en stock"}).then(
+    ()=>{
+      res.json("product accepted")
+    }).catch(err=>{
+      res.json(err)
+    })
+}
