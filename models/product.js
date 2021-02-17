@@ -8,9 +8,8 @@ var productSchema = new Schema(
   price:    { type: Number, required:true},
   ref: { type: String, required:true },
   quantity:    { type: Number, default:0},
-  remise:    { type: Number, required:false},
+  remise:    { type: Number, required:false,default:0},
   stock:    { type: Number, required:true},
-  //new:    { type: Boolean, required:false},
   images: {  type: [String], required:true },
   status:    { type: String, required:true},
   createdByAdmin:    { type: Boolean, required:false},
@@ -18,9 +17,16 @@ var productSchema = new Schema(
   creationDate: { type: Date, required:true },
   category:   {type: Schema.Types.ObjectId, ref: 'Category', required:false},
   marque:   {type: Schema.Types.ObjectId, ref: 'Marque', required:false},
-  //collections:  {type: Schema.Types.ObjectId, ref: 'Collection', required:false},
   artisant:  {type: Schema.Types.ObjectId, ref: 'Artisant',required:false},
-  sellingNumber:{type:Number,default:0}
+  sellingNumber:{type:Number,default:0},
+  rating: [{
+    rateNumber:{type:Number,default:0},
+    name:{type:String},
+    email:{type:String},
+    subject:{type:String},
+    description:{type:String}
+  }],
+  ratingMoyenne: {type:Number, required:false}
 });
 
 module.exports =  mongoose.model('Product', productSchema); 

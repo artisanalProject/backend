@@ -34,4 +34,5 @@ router.get('/getProductById/:id',productController.getProductById)
 router.delete('/deleteProduct/:id',productController.deletProduct)
 router.put('/updateProduct/:id',upload.array('images', 50),productController.updateProduct)
 router.get('/findProductByCategory/:idCategory',productController.findProductByCategory)
+router.post('/updateReviews/:idUser',productController.UpdateRating)
 module.exports = router
