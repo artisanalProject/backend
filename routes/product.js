@@ -35,4 +35,7 @@ router.delete('/deleteProduct/:id',productController.deletProduct)
 router.put('/updateProduct/:id',upload.array('images', 50),productController.updateProduct)
 router.get('/findProductByCategory/:idCategory',productController.findProductByCategory)
 router.post('/updateReviews/:idUser',productController.UpdateRating)
+router.get('/addToFavoris/:idUser',productController.addToFavoris)
+router.get('/removeFromFavoris/:idUser',productController.RemoveFromFavoris)
+
 module.exports = router

@@ -23,7 +23,7 @@ exports.addProduct = (req,res,next)=>{
     if(req.body.remise!='null'){
       product.remise=req.body.remise
     }
-     
+
     if(req.files!=undefined){
       
       let tabImage=[]
@@ -170,5 +170,23 @@ exports.addProduct = (req,res,next)=>{
         product.rating.forEach(rating=>{
 
         })
+      })
+    }
+    exports.addToFavoris= (req,res,next)=>{
+      Product.findById(req.params.idUser).then(product=>{
+        product.topProduct = true
+        product.save()
+        res.json(product)
+      }).catch(err=>{
+        res.json(err)
+      })
+    }
+    exports.RemoveFromFavoris= (req,res,next)=>{
+      Product.findById(req.params.idUser).then(product=>{
+        product.topProduct = false
+        product.save()
+        res.json(product)
+      }).catch(err=>{
+        res.json(err)
       })
     }
