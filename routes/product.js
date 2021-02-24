@@ -31,9 +31,13 @@ const upload = multer({
 router.post('/addProduct',upload.array('images', 50), productController.addProduct)
 router.get('/allProduct',productController.getAllProducts)
 router.get('/getProductById/:id',productController.getProductById)
-router.delete('/deleteProduct/:id',productController.deletProduct)
+router.delete('/deleteProduct/:id',productController.deletProduct) 
 router.put('/updateProduct/:id',upload.array('images', 50),productController.updateProduct)
 router.get('/findProductByCategory/:idCategory',productController.findProductByCategory)
 router.delete('/refuseProduct/:id',productController.refuseProduct)
 router.delete('/acceptProduct/:id',productController.acceptProduct)
+router.post('/updateReviews/:idUser',productController.UpdateRating)
+router.get('/addToFavoris/:idUser',productController.addToFavoris)
+router.get('/removeFromFavoris/:idUser',productController.RemoveFromFavoris)
+
 module.exports = router

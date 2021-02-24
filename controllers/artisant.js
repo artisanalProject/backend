@@ -40,6 +40,7 @@ exports.addArtisant = (req,res,next)=>{
                     accountStatus :"not activated"
                 })
                 artisant.save().then(artisant=>{
+                  
                   res.json(artisant)
                 }).catch(err=>{
                     res.render(err)
@@ -91,8 +92,10 @@ exports.loginArtisan = (req,res,next)=>{
 
 
 exports.activateAccount =async (req,res,next)=>{
+  console.log("z");
   const artisan=  await Artisant.findByIdAndUpdate(req.params.id,{accountStatus:"activated"});
  // Step 1
+ console.log(artisan);
 let transporter = nodemailer.createTransport({
   
     service: 'gmail',

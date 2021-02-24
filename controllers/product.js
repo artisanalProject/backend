@@ -1,33 +1,38 @@
 const Product = require('../models/product')
 
 exports.addProduct = (req,res,next)=>{
-  
+  console.log(req.body);
     const product = new Product({
         name:req.body.name,
         price:req.body.prix,
         ref:req.body.reference,
         stock:req.body.stock,
         status: "en stock",
+        ratingMoyenne : 0,
         createdByAdmin:true,
         category:req.body.category,
         marque:req.body.marque,
       //  collections:req.body.collections,
-      //  artisant:req.body.artisant,
+        artisant:req.body.artisant,
         topProduct:false,
         description:req.body.description,
-        remise :  req.body.remise,
+        
         new:req.body.new,
         creationDate: Date.now()
     })
+    if(req.body.remise!='null'){
+      product.remise=req.body.remise
+    }
+
     if(req.files!=undefined){
       
-        let tabImage=[]
-        req.files.forEach(element => {
-          tabImage.push(element.path)
-        });
-        product.images=tabImage
-      }
-      
+      let tabImage=[]
+      req.files.forEach(element => {
+        tabImage.push(element.path)
+      });
+      product.images=tabImage
+    }
+    
     product.save().then(product=>{
       console.log(product);
         res.json(product)
@@ -156,3 +161,51 @@ exports.acceptProduct=(req,res,next)=>{
       res.json(err)
     })
 }
+  exports.UpdateRating = (req, res, next) => {
+    Product.findByIdAndUpdate(req.params.idUser, {$push : {rating:req.body}}).then(
+      product=>{
+        
+       let somme=0
+        product.rating.forEach( (rating)=>{
+         somme+= rating.rateNumber
+        })
+        somme+=req.body.rateNumber
+       
+        product.ratingMoyenne = somme / (product.rating.length+1)
+        product.save().then(product=>{
+          res.status(200).json(product)
+        })
+      
+       
+      }
+    ).catch(err=>{
+      res.status(500).json({
+        message: "updated failed"
+      })
+    })
+    }
+    exports.calculMoyeneRating= (req,res,next)=>{
+      Product.findById(req.params.id).then(product=>{
+        product.rating.forEach(rating=>{
+
+        })
+      })
+    }
+    exports.addToFavoris= (req,res,next)=>{
+      Product.findById(req.params.idUser).then(product=>{
+        product.topProduct = true
+        product.save()
+        res.json(product)
+      }).catch(err=>{
+        res.json(err)
+      })
+    }
+    exports.RemoveFromFavoris= (req,res,next)=>{
+      Product.findById(req.params.idUser).then(product=>{
+        product.topProduct = false
+        product.save()
+        res.json(product)
+      }).catch(err=>{
+        res.json(err)
+      })
+    }
