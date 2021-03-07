@@ -198,3 +198,27 @@ exports.RemoveFromFavoris = (req, res, next) => {
         res.json(err)
     })
 }
+
+
+exports.verifExistEmailOnReviews = (req, res, next) => {
+    var emailStatus = false;
+    Product.findById(req.params.id).then(
+
+        product => {
+
+            product.rating.forEach(rating => {
+
+                if (rating.email == req.params.email) {
+                    emailStatus = true
+
+                }
+            })
+
+            console.log(emailStatus);
+            res.status(200).json(emailStatus)
+        },
+
+    ).catch(err => {
+        res.json(err)
+    })
+}
