@@ -42,7 +42,7 @@ exports.addMarque = (req,res,next)=>{
     exports.deleteMarque = (req, res, next) => {
         Marque.findById(req.params.id)
           .then(marque => {
-            marque.remove({}).then(()=>{ res.status(200).json({message:"deleted"});})
+            marque.deleteOne().then(()=>{ res.status(200).json({message:"deleted"});})
           })
           .catch(error => {
             console.log(error);

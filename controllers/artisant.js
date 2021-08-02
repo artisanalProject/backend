@@ -20,6 +20,40 @@ function encrypt(text){
     return dec;
   }
 
+
+  exports.createArtisant = (req,res,next)=>{
+    Artisant.findOne({email:req.body.email},function(err,doc){        
+        if(doc!=null)
+        res.json("account already exist")
+        else{
+            
+              const artisant = new Artisant({
+                    name : req.body.name,
+                    email: req.body.email,
+                    phoneNumber : req.body.phoneNumber,
+                    password: encrypt(req.body.password),
+                    address: req.body.address,
+                    storeName: req.body.storeName,
+                    typeOfWork: req.body.typeOfWork,
+                    codePostale: req.body.codePostal,
+                    cin:req.body.cin,
+                    creationDate: Date.now(),
+                    accountStatus :"activated"
+                })
+                artisant.save().then(artisant=>{
+                  
+                  res.json(artisant)
+                }).catch(err=>{
+                    res.json(err)
+                    console.log(err);
+                })
+            
+        }
+    })
+}
+
+
+
 exports.addArtisant = (req,res,next)=>{
     Artisant.findOne({email:req.body.email},function(err,doc){        
         if(doc!=null)
@@ -43,7 +77,7 @@ exports.addArtisant = (req,res,next)=>{
                   
                   res.json(artisant)
                 }).catch(err=>{
-                    res.render(err)
+                    res.json(err)
                     console.log(err);
                 })
             

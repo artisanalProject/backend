@@ -30,6 +30,8 @@ const upload = multer({
   fileFilter: fileFilter
 });
 router.post('/addArtisant',artisantController.addArtisant)
+router.post('/createArtisant',artisantController.createArtisant)
+
 router.post('/loginArtisant',artisantController.loginArtisan)
 router.get('/activateAccount/:id',token.ensureToken,artisantController.activateAccount)
 router.get('/NotActivatedAccounts',token.ensureToken,artisantController.NotActivatedAccounts)
