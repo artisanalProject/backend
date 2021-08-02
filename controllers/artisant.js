@@ -221,7 +221,7 @@ exports.updateProfile = async (req, res, next) => {
 }
 
 exports.deleteAccount = async (req, res, next) => {
-    await Artisant.findByIdAndDelete(req.body._id)
+    await Artisant.findByIdAndDelete(req.params.id)
     res.json('deleted')
 }
 exports.changePassword = async (req, res, next) => {
