@@ -35,5 +35,7 @@ router.get('/activateAccount/:id', token.ensureToken, artisantController.activat
 router.get('/NotActivatedAccounts', token.ensureToken, artisantController.NotActivatedAccounts)
 router.post('/RequestProduct', upload.array('images', 50), artisantController.RequestProduct)
 router.get('/getArtisant', artisantController.getArtisant)
-router.get('/updateProfile', artisantController.updateProfile)
+router.put('/updateProfile', artisantController.updateProfile)
+router.put('/deleteAccount', artisantController.deleteAccount)
+router.put('/changePassword', artisantController.changePassword)
 module.exports = router
