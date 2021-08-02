@@ -2,12 +2,12 @@ const express = require('express')
 const router = express.Router()
 const artisantController = require('../controllers/artisant')
 const token = require('../controllers/token')
-const multer = require ('multer');
+const multer = require('multer');
 const storage = multer.diskStorage({
-  destination: function(req, file, cb) {
+  destination: function (req, file, cb) {
     cb(null, './uploads/');
   },
-  filename: function(req, file, cb) {
+  filename: function (req, file, cb) {
     cb(null, new Date().toISOString().replace(/:/g, '-') + file.originalname);
   }
 });
@@ -32,9 +32,12 @@ const upload = multer({
 router.post('/addArtisant',artisantController.addArtisant)
 router.post('/createArtisant',artisantController.createArtisant)
 
-router.post('/loginArtisant',artisantController.loginArtisan)
-router.get('/activateAccount/:id',token.ensureToken,artisantController.activateAccount)
-router.get('/NotActivatedAccounts',token.ensureToken,artisantController.NotActivatedAccounts)
-router.post('/RequestProduct',upload.array('images', 50),artisantController.RequestProduct)
-router.get('/getArtisant',artisantController.getArtisant)
+router.post('/loginArtisant', artisantController.loginArtisan)
+router.get('/activateAccount/:id', token.ensureToken, artisantController.activateAccount)
+router.get('/NotActivatedAccounts', token.ensureToken, artisantController.NotActivatedAccounts)
+router.post('/RequestProduct', upload.array('images', 50), artisantController.RequestProduct)
+router.get('/getArtisant', artisantController.getArtisant)
+router.put('/updateProfile', artisantController.updateProfile)
+router.put('/deleteAccount', artisantController.deleteAccount)
+router.put('/changePassword', artisantController.changePassword)
 module.exports = router
