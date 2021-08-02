@@ -89,7 +89,7 @@ exports.deletProduct = (req, res, next) => {
             });
         });
 };
-exports.updateProduct = async(req, res, next) => {
+exports.updateProduct = async (req, res, next) => {
     console.log(req.files);
     console.log(req.body);
 
