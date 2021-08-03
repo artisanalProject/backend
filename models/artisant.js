@@ -13,6 +13,7 @@ var artisantSchema = new Schema(
   codePostale:    { type: String, required:true},
   cin: { type: String, required:true },
   creationDate:   {type: Date,  required:true},
+  accountStatus: { type: String, required:true },
 });
 
 module.exports =  mongoose.model('Artisant', artisantSchema); 
