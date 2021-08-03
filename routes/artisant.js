@@ -29,13 +29,15 @@ const upload = multer({
   },
   fileFilter: fileFilter
 });
-router.post('/addArtisant', artisantController.addArtisant)
+router.post('/addArtisant',artisantController.addArtisant)
+router.post('/createArtisant',artisantController.createArtisant)
+
 router.post('/loginArtisant', artisantController.loginArtisan)
 router.get('/activateAccount/:id', token.ensureToken, artisantController.activateAccount)
 router.get('/NotActivatedAccounts', token.ensureToken, artisantController.NotActivatedAccounts)
 router.post('/RequestProduct', upload.array('images', 50), artisantController.RequestProduct)
 router.get('/getArtisant', artisantController.getArtisant)
 router.put('/updateProfile', artisantController.updateProfile)
-router.put('/deleteAccount', artisantController.deleteAccount)
+router.delete('/deleteAccount/:id', artisantController.deleteAccount)
 router.put('/changePassword', artisantController.changePassword)
 module.exports = router

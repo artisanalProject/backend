@@ -12,8 +12,6 @@ exports.addProduct = (req, res, next) => {
         createdByAdmin: true,
         category: req.body.category,
         marque: req.body.marque,
-        //  collections:req.body.collections,
-        artisant: req.body.artisant,
         topProduct: false,
         description: req.body.description,
 
@@ -22,6 +20,9 @@ exports.addProduct = (req, res, next) => {
     })
     if (req.body.remise != 'null') {
         product.remise = req.body.remise
+    }
+    if (req.body.artisant != "undefined") {
+        product.artisant = req.body.artisant
     }
 
     if (req.files != undefined) {
@@ -89,16 +90,8 @@ exports.deletProduct = (req, res, next) => {
             });
         });
 };
-exports.updateProduct = async (req, res, next) => {
-    console.log(req.files);
-    console.log(req.body);
-
+exports.updateProduct = async(req, res, next) => {
     oldImages = JSON.parse(req.body.oldImages)
-
-    // req.body.oldImages.forEach(element => {
-    //   console.log(element);
-
-    // });
     let paths = [];
     if (oldImages.length > 0) {
         oldImages.forEach(element => {
@@ -106,15 +99,9 @@ exports.updateProduct = async (req, res, next) => {
         });
     }
     if (req.files) {
-
         req.files.forEach(element => {
             paths.push(element.path)
-
         });
-
-        console.log(paths);
-
-
         Product.findByIdAndUpdate(req.params.id, { images: paths }).then(
             () => {
                 Product.findByIdAndUpdate(req.params.id, req.body).then(
@@ -138,6 +125,7 @@ exports.updateProduct = async (req, res, next) => {
                 message: "failed to delete"
             });
         })
+        
 
     }
 }
