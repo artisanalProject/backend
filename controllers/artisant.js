@@ -5,6 +5,7 @@ const nodemailer = require("nodemailer");
 var crypto = require('crypto');
 var algorithm = 'aes-256-ctr';
 var password = 'd6F3Efeq';
+const  sendAccessEmail = require("../middlewares/mail")
 
 function encrypt(text) {
     var cipher = crypto.createCipher(algorithm, password)
@@ -40,8 +41,8 @@ function decrypt(text) {
                     creationDate: Date.now(),
                     accountStatus :"activated"
                 })
-                artisant.save().then(artisant=>{
-                  
+                artisant.save().then( async artisant=>{
+                    await sendAccessEmail.sendAccessEmail(artisant.email ,decrypt(artisant.password) )
                   res.json(artisant)
                 }).catch(err=>{
                     res.json(err)
