@@ -128,22 +128,23 @@ exports.loginArtisan = (req, res, next) => {
 
 
 exports.activateAccount = async (req, res, next) => {
-    console.log("z");
+
     const artisan = await Artisant.findByIdAndUpdate(req.params.id, { accountStatus: "activated" });
     // Step 1
-    console.log(artisan);
+
     let transporter = nodemailer.createTransport({
 
         service: 'gmail',
+        secure:true,
         auth: {
-            user: process.env.EMAIL || 'salmene.benromdhane@esprit.tn', // TODO: your gmail account
-            pass: process.env.PASSWORD || 'Salsalsal020.' // TODO: your gmail password
+            user: process.env.EMAIL || 'mokhleshaj@gmail.com', // TODO: your gmail account
+            pass: process.env.PASSWORD || 'Mokhles 07212' // TODO: your gmail password
         }
     });
 
     // Step 2
     let mailOptions = {
-        from: 'salmene.benromdhane@esprit.tn', // TODO: email sender
+        from: 'mokhleshaj@gmail.com', // TODO: email sender
         to: artisan.email, // TODO: email receiver
         subject: 'Activation compte Art & shop',
         text: "M/Mme " + artisan.name + " Votre compte est activé de la part de l'admin avec succès. Vous pouvez maintenat accèder à votre espace et admirer la navigation dans notre plateform. Pour plus d'informations n'hésitez pas de nous contacter via ce num ...."
@@ -152,9 +153,13 @@ exports.activateAccount = async (req, res, next) => {
     // Step 3
     transporter.sendMail(mailOptions, (err, data) => {
         if (err) {
+            console.log(err);
             res.json(err);
         }
-        else res.json("Email sent!")
+       
+        else {
+            console.log("Email sent!");
+            res.json("Email sent!")}
     });
 
 }

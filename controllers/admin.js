@@ -78,32 +78,45 @@ exports.loginAdmin = (req,res,next)=>{
 
 exports.forgotPwd = async (req,res,next)=>{
     const artisan=  await Artisant.findOne({email:req.query.emailTo});
-    if(artisan!=null){
-
+    const admin=  await Admin.findOne({email:req.query.emailTo});
+    if(artisan!=null || admin!=null){
+      
        // Step 1
    let transporter = nodemailer.createTransport({
      
     service: 'gmail',
+    secure:true,
     auth: {
-        user: process.env.EMAIL || 'salmene.benromdhane@esprit.tn', // TODO: your gmail account
-        pass: process.env.PASSWORD || 'Salsalsal020.' // TODO: your gmail password
+        user: process.env.EMAIL || 'mokhleshaj@gmail.com', // TODO: your gmail account
+        pass: process.env.PASSWORD || 'Mokhles 07212' // TODO: your gmail password
     }
   });
-  
+  if(admin){
+    var txt="M/Mme "+admin.name+", Voici votre mot de passe : "+decrypt(admin.password)
+    var receiver= admin.email
+  }else{
+    var txt="M/Mme "+artisan.name+", Voici votre mot de passe : "+decrypt(artisan.password)
+    var receiver= artisan.email
+  }
   // Step 2
   let mailOptions = {
-    from: 'salmene.benromdhane@esprit.tn', // TODO: email sender
-    to: artisan.email, // TODO: email receiver
+    from: 'mokhleshaj@gmail.com', // TODO: email sender
+    to: receiver, // TODO: email receiver
     subject: 'Art & shop : Mot de passe oublié',
-    text: "M/Mme "+artisan.name+", Voici votre mot de passe : "+decrypt(artisan.password)
+    text: txt
   };
   
   // Step 3
   transporter.sendMail(mailOptions, (err, data) => {
     if (err) {
+      
+      console.log(err);
         res.json(err);
     }
-    else res.json("Email sent!")
+  
+    else{
+      console.log("email sent");
+      res.json("Email sent!")}
   }); 
     }
     else {
