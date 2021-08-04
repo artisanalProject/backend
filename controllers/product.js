@@ -1,5 +1,6 @@
 const Product = require('../models/product')
-const fs = require('fs')
+const fs = require('fs');
+const { json } = require('express');
 exports.addProduct = (req, res, next) => {
     console.log(req.body);
     const product = new Product({
@@ -221,4 +222,15 @@ exports.verifExistEmailOnReviews = (req, res, next) => {
     ).catch(err => {
         res.json(err)
     })
+}
+
+exports.refuseProduct = async (req, res, next) => {
+    req.body.status = "refused"
+    await Product.findByIdAndUpdate(req.body._id, req.body)
+    res.json("product refused")
+}
+exports.acceptProduct = async (req, res, next) => {
+    req.body.status = "en stock"
+    await Product.findByIdAndUpdate(req.body._id, req.body)
+    res.json("product accepted")
 }
