@@ -6,14 +6,14 @@ var artisantSchema = new Schema(
   name: { type: String, required:true },
   email:    { type: String, required:true},
   password:    { type: String, required:true},
-  phoneNumber: { type: String, required:true },
-  address:    { type: String, required:true},
-  storeName: { type: String, required:true },
-  typeOfWork:    { type: String, required:true},
-  codePostale:    { type: String, required:true},
-  cin: { type: String, required:true },
-  creationDate:   {type: Date,  required:true},
-  accountStatus: { type: String, required:true },
+  phoneNumber: { type: String, required:false },
+  address:    { type: String, required:false},
+  storeName: { type: String, required:false },
+  typeOfWork:    { type: String, required:false},
+  codePostale:    { type: String, required:false},
+  cin: { type: String, required:false },
+  creationDate:   {type: Date,  required: false},
+  accountStatus: { type: String, required:false },
 });
 
 module.exports =  mongoose.model('Artisant', artisantSchema); 

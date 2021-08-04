@@ -41,10 +41,22 @@ exports.getMarqueByCategoryId = (req, res) => {
   })
 }
 
+// exports.deleteMarque = (req, res, next) => {
+//   Marque.findById(req.params.id)
+//     .then(marque => {
+//       marque.remove({}).then(() => { res.status(200).json({ message: "deleted" }); })
+//     })
+//     .catch(error => {
+//       console.log(error);
+//       res.status(500).json({
+//         message: "failed to delete"
+//       });
+//     });
+// };
 exports.deleteMarque = (req, res, next) => {
   Marque.findById(req.params.id)
     .then(marque => {
-      marque.remove({}).then(() => { res.status(200).json({ message: "deleted" }); })
+      marque.deleteOne().then(() => { res.status(200).json({ message: "deleted" }); })
     })
     .catch(error => {
       console.log(error);

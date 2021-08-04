@@ -29,11 +29,13 @@ exports.addCategory = (req,res,next)=>{
       exports.deleteCategory = (req, res, next) => {
        Categorie.findById(req.params.id).then(category=>{
          Marque.findOne({category:category._id}).then(marque=>{
-          marque.remove({})
+           if (marque){
+            marque.remove({})
+           }
          })
          
-         category.remove({})
-         Product.updateOne({category:req.params.id}, {$unset: {field: 1 }}, callback);
+         category.deleteOne()
+         Product.updateOne({category:req.params.id}, {$unset: {field: 1 }});
        }).then(()=>{ res.status(200).json({message:"deleted"});})
        .catch(err=>{
          res.status(500).json({message:"err"+err})

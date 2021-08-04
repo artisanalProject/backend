@@ -6,6 +6,7 @@ const nodemailer = require("nodemailer");
 var crypto = require('crypto');
 var algorithm = 'aes-256-ctr';
 var password = 'd6F3Efeq';
+const  sendAccessEmail = require("../middlewares/mail")
 
 function encrypt(text) {
     var cipher = crypto.createCipher(algorithm, password)
@@ -19,35 +20,69 @@ function decrypt(text) {
     var dec = decipher.update(text, 'hex', 'utf8')
     dec += decipher.final('utf8');
     return dec;
+  }
+
+
+  exports.createArtisant = (req,res,next)=>{
+    Artisant.findOne({email:req.body.email},function(err,doc){        
+        if(doc!=null)
+        res.json("account already exist")
+        else{
+            
+              const artisant = new Artisant({
+                    name : req.body.name,
+                    email: req.body.email,
+                    phoneNumber : req.body.phoneNumber,
+                    password: encrypt(req.body.password),
+                    address: req.body.address,
+                    storeName: req.body.storeName,
+                    typeOfWork: req.body.typeOfWork,
+                    codePostale: req.body.codePostal,
+                    cin:req.body.cin,
+                    creationDate: Date.now(),
+                    accountStatus :"activated"
+                })
+                artisant.save().then( async artisant=>{
+                    await sendAccessEmail.sendAccessEmail(artisant.email ,decrypt(artisant.password) )
+                  res.json(artisant)
+                }).catch(err=>{
+                    res.json(err)
+                    console.log(err);
+                })
+            
+        }
+    })
 }
 
-exports.addArtisant = (req, res, next) => {
-    Artisant.findOne({ email: req.body.email }, function (err, doc) {
-        if (doc != null)
-            res.json("account already exist")
-        else {
 
-            const artisant = new Artisant({
-                name: req.body.name,
-                email: req.body.email,
-                phoneNumber: req.body.phoneNumber,
-                password: encrypt(req.body.password),
-                address: req.body.address,
-                storeName: req.body.storeName,
-                typeOfWork: req.body.typeOfWork,
-                codePostale: req.body.codePostal,
-                cin: req.body.cin,
-                creationDate: Date.now(),
-                accountStatus: "not activated"
-            })
-            artisant.save().then(artisant => {
 
-                res.json(artisant)
-            }).catch(err => {
-                res.json(err)
-                console.log(err);
-            })
-
+exports.addArtisant = (req,res,next)=>{
+    Artisant.findOne({email:req.body.email},function(err,doc){        
+        if(doc!=null)
+        res.json("account already exist")
+        else{
+            
+              const artisant = new Artisant({
+                    name : req.body.name,
+                    email: req.body.email,
+                    phoneNumber : req.body.phoneNumber,
+                    password: encrypt(req.body.password),
+                    address: req.body.address,
+                    storeName: req.body.storeName,
+                    typeOfWork: req.body.typeOfWork,
+                    codePostale: req.body.codePostal,
+                    cin:req.body.cin,
+                    creationDate: Date.now(),
+                    accountStatus :"not activated"
+                })
+                artisant.save().then(artisant=>{
+                  
+                  res.json(artisant)
+                }).catch(err=>{
+                    res.json(err)
+                    console.log(err);
+                })
+            
         }
     })
 }
@@ -93,22 +128,23 @@ exports.loginArtisan = (req, res, next) => {
 
 
 exports.activateAccount = async (req, res, next) => {
-    console.log("z");
+
     const artisan = await Artisant.findByIdAndUpdate(req.params.id, { accountStatus: "activated" });
     // Step 1
-    console.log(artisan);
+
     let transporter = nodemailer.createTransport({
 
         service: 'gmail',
+        secure:true,
         auth: {
-            user: process.env.EMAIL || 'salmene.benromdhane@esprit.tn', // TODO: your gmail account
-            pass: process.env.PASSWORD || 'Salsalsal020.' // TODO: your gmail password
+            user: process.env.EMAIL || 'mokhleshaj@gmail.com', // TODO: your gmail account
+            pass: process.env.PASSWORD || 'Mokhles 07212' // TODO: your gmail password
         }
     });
 
     // Step 2
     let mailOptions = {
-        from: 'salmene.benromdhane@esprit.tn', // TODO: email sender
+        from: 'mokhleshaj@gmail.com', // TODO: email sender
         to: artisan.email, // TODO: email receiver
         subject: 'Activation compte Art & shop',
         text: "M/Mme " + artisan.name + " Votre compte est activé de la part de l'admin avec succès. Vous pouvez maintenat accèder à votre espace et admirer la navigation dans notre plateform. Pour plus d'informations n'hésitez pas de nous contacter via ce num ...."
@@ -117,9 +153,13 @@ exports.activateAccount = async (req, res, next) => {
     // Step 3
     transporter.sendMail(mailOptions, (err, data) => {
         if (err) {
+            console.log(err);
             res.json(err);
         }
-        else res.json("Email sent!")
+       
+        else {
+            console.log("Email sent!");
+            res.json("Email sent!")}
     });
 
 }
@@ -191,7 +231,7 @@ exports.updateProfile = async (req, res, next) => {
 }
 
 exports.deleteAccount = async (req, res, next) => {
-    await Artisant.findByIdAndDelete(req.body._id)
+    await Artisant.findByIdAndDelete(req.params.id)
     res.json('deleted')
 }
 exports.changePassword = async (req, res, next) => {
