@@ -7,4 +7,6 @@ router.delete('/deleteArticle/:id',articleController.deleteArticle)
 router.get("/getArticles",articleController.getAllArticles)
 router.get("/getArticlesById/:id",articleController.getAllArticleById)
 router.put("/updateArticle/:id",articleController.updateArticle)
+router.get("/addHit/:id",articleController.addHit)
+router.put("/addComment/:id",articleController.addComment)
 module.exports = router

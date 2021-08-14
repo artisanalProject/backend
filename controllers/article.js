@@ -29,22 +29,18 @@ exports.getAllArticleById = async (req,res,next)=>{
     }
 }
 exports.addArticle = async (req,res,next)=>{
-  
+    try{
     const article =  new Article({
         title: req.body.title,
         content:  req.body.content,
         image:req.file.path,
         top : req.body.top,
     })
-    console.log(req.body);
-   try{
-    if(article){
+  const comment = JSON.parse(req.body.comment)
+    article.comments.push(comment)
         await article.save()
         res.json(article)
-    }
-    else {
-        res.status(400).json({message:"article not found"})
-    }
+    
    }
    catch(err){
        console.log(err);
@@ -109,4 +105,36 @@ exports.updateArticle = async(req, res, next) => {
         
 
     }
+
+}
+exports.addHit = async (req,res,next)=>{
+    try{
+        const article = await Article.findById(req.params.id)
+        if(article){
+            article.hits +=1
+            article.save()
+            res.status(200).json({message:"hits added"})
+        }
+        else res.json(400).json({message:"article not found"})
+      
+    }
+  catch(err){
+      res.status(500).json(err)
+  }
+}
+exports.addComment = async (req,res,next)=>{
+    try{
+        const article = await Article.findById(req.params.id)
+        if(article){
+           article.comments.push(req.body)
+            article.save()
+            res.status(200).json({message:"comment added successfully"})
+        }
+        else res.json(400).json({message:"article not found"})
+      
+    }
+  catch(err){
+      console.log(err);
+      res.status(500).json(err)
+  }
 }
