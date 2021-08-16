@@ -1,4 +1,5 @@
 const Artisant = require('../models/artisant')
+const Admin = require('../models/admin')
 const Product = require('../models/product')
 const jwt = require('jsonwebtoken');
 const nodemailer = require("nodemailer");
@@ -222,8 +223,11 @@ exports.getArtisant = (req, res, next) => {
 }
 
 exports.updateProfile = async (req, res, next) => {
-    await Artisant.findByIdAndUpdate(req.body._id, req.body)
-    res.json('updated')
+    if (req.body.role == 'artisan')
+        var user = await Artisant.findByIdAndUpdate(req.body.user._id, req.body.user, { new: true })
+    else
+        var user = await Admin.findByIdAndUpdate(req.body.user._id, req.body.user, { new: true })
+    res.json(user)
 }
 
 exports.deleteAccount = async (req, res, next) => {
@@ -232,8 +236,11 @@ exports.deleteAccount = async (req, res, next) => {
 }
 exports.changePassword = async (req, res, next) => {
 
-    req.body.password = encrypt(req.body.password)
+    req.body.user.password = encrypt(req.body.user.password)
     console.log(req.body);
-    await Artisant.findByIdAndUpdate(req.body._id, req.body)
-    res.json('password changed')
+    if (req.body.role == 'artisan')
+        var user = await Artisant.findByIdAndUpdate(req.body.user._id, req.body.user, { new: true })
+    else
+        var user = await Admin.findByIdAndUpdate(req.body.user._id, req.body.user, { new: true })
+    res.json(user)
 }

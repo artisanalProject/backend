@@ -38,4 +38,6 @@ router.post('/updateReviews/:idUser', productController.UpdateRating)
 router.get('/addToFavoris/:idUser', productController.addToFavoris)
 router.get('/removeFromFavoris/:idUser', productController.RemoveFromFavoris)
 router.get('/verifExistEmailOnReviews/:id/:email', productController.verifExistEmailOnReviews)
+router.put('/acceptProduct', productController.acceptProduct)
+router.put('/refuseProduct', productController.refuseProduct)
 module.exports = router
