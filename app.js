@@ -13,6 +13,7 @@ var marqueRouter = require('./routes/marque')
 var collectionRouter = require('./routes/collection')
 var adminRouter = require('./routes/admin')
 const contactRouter = require('./routes/contact')
+const articleRouter = require('./routes/article')
 var cors = require('cors')
 var app = express();
 
@@ -33,6 +34,7 @@ app.use('/marque',marqueRouter)
 app.use('/collection',collectionRouter)
 app.use('/admin',adminRouter)
 app.use('/contact',contactRouter)
+app.use('/article',articleRouter)
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
