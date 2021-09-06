@@ -3,6 +3,7 @@ const router = express.Router()
 const artisantController = require('../controllers/artisant')
 const token = require('../controllers/token')
 const multer = require('multer');
+const jwt = require("../middlewares/jwt")
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, './uploads/');
@@ -30,14 +31,14 @@ const upload = multer({
   fileFilter: fileFilter
 });
 router.post('/addArtisant',artisantController.addArtisant)
-router.post('/createArtisant',artisantController.createArtisant)
+router.post('/createArtisant',jwt.ensureToken,artisantController.createArtisant)
 
 router.post('/loginArtisant', artisantController.loginArtisan)
 router.get('/activateAccount/:id', token.ensureToken, artisantController.activateAccount)
 router.get('/NotActivatedAccounts', token.ensureToken, artisantController.NotActivatedAccounts)
-router.post('/RequestProduct', upload.array('images', 50), artisantController.RequestProduct)
+router.post('/RequestProduct', upload.array('images', 50),jwt.ensureToken, artisantController.RequestProduct)
 router.get('/getArtisant', artisantController.getArtisant)
-router.put('/updateProfile', artisantController.updateProfile)
-router.delete('/deleteAccount/:id', artisantController.deleteAccount)
-router.put('/changePassword', artisantController.changePassword)
+router.put('/updateProfile',jwt.ensureToken, artisantController.updateProfile)
+router.delete('/deleteAccount/:id',jwt.ensureToken, artisantController.deleteAccount)
+router.put('/changePassword',jwt.ensureToken, artisantController.changePassword)
 module.exports = router
