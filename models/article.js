@@ -6,7 +6,7 @@ var articleSchema = new Schema(
   title: { type: String, required:true },
   content:    { type: String, required:true},
   image: {type: String, required:false},
-  top : {type:Boolean, required:false},
+  top : {type:Boolean,default:false, required:false},
   hits: {type:Number, default:0, required:false},
   comments: [{
     name:{type:String},
