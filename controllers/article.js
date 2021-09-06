@@ -29,14 +29,11 @@ exports.getAllArticleById = async (req,res,next)=>{
     }
 }
 exports.addArticle = async (req,res,next)=>{
-    console.log("zzz");
-    console.log(req.file.path);
     try{
     const article =  new Article({
         title: req.body.title,
         content:  req.body.content,
         image:req.file.path,
-        // top : req.body.top,
     })
         await article.save()
         res.json(article)
@@ -68,43 +65,25 @@ exports.deleteArticle = async (req,res,next)=>{
 }
 
 exports.updateArticle = async(req, res, next) => {
-    oldImages = JSON.parse(req.body.oldImages)
-    let paths = [];
-    if (oldImages.length > 0) {
-        oldImages.forEach(element => {
-            paths.push(element)
-        });
+    try{
+        const article = await Article.findById(req.params.id)
+        if(article){
+            
+            article.title =req.body.title
+            article.content = req.body.content
+            article.image = req.file.path
+        }
+      await  article.save()
+        res.status(200).json({
+            article : article,
+            message:"updated successfully"})
     }
-    if (req.files) {
-        req.files.forEach(element => {
-            paths.push(element.path)
-        });
-        Article.findByIdAndUpdate(req.params.id, { images: paths }).then(
-            () => {
-                Article.findByIdAndUpdate(req.params.id, req.body).then(
-                    () => {
-                        res.status(200).json({
-                            message: "updated"
-                        });
-                    }
-                ).catch(error => {
-                    console.log(error);
+   catch(err){
+       console.log(err);
+res.status(500).json(err)
+   }
 
-                    res.status(500).json({
-                        message: "failed to delete"
-                    });
-                })
-            }
-        ).catch(error => {
-            console.log(error);
-
-            res.status(500).json({
-                message: "failed to delete"
-            });
-        })
-        
-
-    }
+    
 
 }
 exports.addHit = async (req,res,next)=>{
