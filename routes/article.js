@@ -1,0 +1,15 @@
+const express = require('express')
+const router = express.Router()
+const articleController = require('../controllers/article')
+const multer = require("../middlewares/multer")
+router.post("/addArticle",multer.upload.single('image'),articleController.addArticle)
+router.delete('/deleteArticle/:id',articleController.deleteArticle)
+router.get("/getArticles",articleController.getAllArticles)
+router.get("/getArticlesById/:id",articleController.getAllArticleById)
+router.put("/updateArticle/:id",articleController.updateArticle)
+router.get("/addHit/:id",articleController.addHit)
+router.put("/addComment/:id",articleController.addComment)
+router.get("/addToFavoris/:id",articleController.addToFavoris)
+router.get("/removeFromFavoris/:id",articleController.removeFromFavoris)
+
+module.exports = router
