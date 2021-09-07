@@ -24,32 +24,41 @@ function decrypt(text) {
 
 
   exports.createArtisant = (req,res,next)=>{
-    Artisant.findOne({email:req.body.email},function(err,doc){        
-        if(doc!=null)
-        res.json("account already exist")
-        else{
-            
-              const artisant = new Artisant({
-                    name : req.body.name,
-                    email: req.body.email,
-                    phoneNumber : req.body.phoneNumber,
-                    password: encrypt(req.body.password),
-                    address: req.body.address,
-                    storeName: req.body.storeName,
-                    typeOfWork: req.body.typeOfWork,
-                    codePostale: req.body.codePostal,
-                    cin:req.body.cin,
-                    creationDate: Date.now(),
-                    accountStatus :"activated"
-                })
-                artisant.save().then( async artisant=>{
-                    await sendAccessEmail.sendAccessEmail(artisant.email ,decrypt(artisant.password) )
-                  res.json(artisant)
-                }).catch(err=>{
-                    res.json(err)
-                    console.log(err);
-                })
-            
+    jwt.verify(req.token,process.env.JWT_KEY , (err,data)=>{
+        if(err){
+          res.status(401).json({
+            message:"forbiden"
+          })
+        }
+        else {
+            Artisant.findOne({email:req.body.email},function(err,doc){        
+                if(doc!=null)
+                res.json("account already exist")
+                else{
+                    
+                      const artisant = new Artisant({
+                            name : req.body.name,
+                            email: req.body.email,
+                            phoneNumber : req.body.phoneNumber,
+                            password: encrypt(req.body.password),
+                            address: req.body.address,
+                            storeName: req.body.storeName,
+                            typeOfWork: req.body.typeOfWork,
+                            codePostale: req.body.codePostal,
+                            cin:req.body.cin,
+                            creationDate: Date.now(),
+                            accountStatus :"activated"
+                        })
+                        artisant.save().then( async artisant=>{
+                            await sendAccessEmail.sendAccessEmail(artisant.email ,decrypt(artisant.password) )
+                          res.json(artisant)
+                        }).catch(err=>{
+                            res.json(err)
+                            console.log(err);
+                        })
+                    
+                }
+            })
         }
     })
 }
@@ -57,6 +66,7 @@ function decrypt(text) {
 
 
 exports.addArtisant = (req,res,next)=>{
+
     Artisant.findOne({email:req.body.email},function(err,doc){        
         if(doc!=null)
         res.json("account already exist")
@@ -128,85 +138,111 @@ exports.loginArtisan = (req, res, next) => {
 
 
 exports.activateAccount = async (req, res, next) => {
-
-    const artisan = await Artisant.findByIdAndUpdate(req.params.id, { accountStatus: "activated" });
-    // Step 1
-
-    let transporter = nodemailer.createTransport({
-
-        service: 'gmail',
-        secure:true,
-        auth: {
-            user: process.env.EMAIL || 'mokhleshaj@gmail.com', // TODO: your gmail account
-            pass: process.env.PASSWORD || 'Mokhles 07212' // TODO: your gmail password
+ jwt.verify(req.token,process.env.JWT_KEY , async (err,data)=>{
+        if(err){
+          res.status(401).json({
+            message:"forbiden"
+          })
         }
-    });
-
-    // Step 2
-    let mailOptions = {
-        from: 'mokhleshaj@gmail.com', // TODO: email sender
-        to: artisan.email, // TODO: email receiver
-        subject: 'Activation compte Art & shop',
-        text: "M/Mme " + artisan.name + " Votre compte est activé de la part de l'admin avec succès. Vous pouvez maintenat accèder à votre espace et admirer la navigation dans notre plateform. Pour plus d'informations n'hésitez pas de nous contacter via ce num ...."
-    };
-
-    // Step 3
-    transporter.sendMail(mailOptions, (err, data) => {
-        if (err) {
-            console.log(err);
-            res.json(err);
-        }
-       
         else {
-            console.log("Email sent!");
-            res.json("Email sent!")}
-    });
-
+            const artisan = await Artisant.findByIdAndUpdate(req.params.id, { accountStatus: "activated" });
+            // Step 1
+        
+            let transporter = nodemailer.createTransport({
+        
+                service: 'gmail',
+                secure:true,
+                auth: {
+                    user: process.env.EMAIL || 'mokhleshaj@gmail.com', // TODO: your gmail account
+                    pass: process.env.PASSWORD || 'Mokhles 07212' // TODO: your gmail password
+                }
+            });
+        
+            // Step 2
+            let mailOptions = {
+                from: 'mokhleshaj@gmail.com', // TODO: email sender
+                to: artisan.email, // TODO: email receiver
+                subject: 'Activation compte Art & shop',
+                text: "M/Mme " + artisan.name + " Votre compte est activé de la part de l'admin avec succès. Vous pouvez maintenat accèder à votre espace et admirer la navigation dans notre plateform. Pour plus d'informations n'hésitez pas de nous contacter via ce num ...."
+            };
+        
+            // Step 3
+            transporter.sendMail(mailOptions, (err, data) => {
+                if (err) {
+                    console.log(err);
+                    res.json(err);
+                }
+               
+                else {
+                    console.log("Email sent!");
+                    res.json("Email sent!")}
+            });
+        }
+   
+ })
 }
 
 exports.NotActivatedAccounts = (req, res, next) => {
-    Artisant.find({ accountStatus: "not activated" }).exec()
-        .then(docs => {
-            res.status(200).json(docs);
-        })
+    jwt.verify(req.token,process.env.JWT_KEY , async (err,data)=>{
+        if(err){
+          res.status(401).json({
+            message:"forbiden"
+          })
+        }
+        else {
+            Artisant.find({ accountStatus: "not activated" }).exec()
+            .then(docs => {
+                res.status(200).json(docs);
+            })
+        }
+    })
 }
 exports.RequestProduct = (req, res, next) => {
-    console.log(req.body);
+    jwt.verify(req.token,process.env.JWT_KEY , async (err,data)=>{
+        if(err){
+          res.status(401).json({
+            message:"forbiden"
+          })
+        }
+        else {
 
 
-    const product = new Product({
-        name: req.body.name,
-        price: req.body.prix,
-        ref: req.body.reference,
-        stock: req.body.stock,
-        status: "Requested",
-        createdByAdmin: false,
-        category: req.body.category,
-        marque: req.body.marque,
-        artisant: req.body.artisan,
-        topProduct: false,
-        description: req.body.description,
-        remise: req.body.remise,
-        creationDate: Date.now()
-    })
-    if (req.files != undefined) {
 
-        let tabImage = []
-        req.files.forEach(element => {
-            tabImage.push(element.path)
-        });
-        product.images = tabImage
-    }
-
-    product.save().then(product => {
-        console.log(product);
-        res.json(product)
-    }).catch(error => {
-
-        console.log(error);
-        res.status(500).json({
-            message: "failed to create a produuct"
-        });
+            const product = new Product({
+                name: req.body.name,
+                price: req.body.prix,
+                ref: req.body.reference,
+                stock: req.body.stock,
+                status: "Requested",
+                createdByAdmin: false,
+                category: req.body.category,
+                marque: req.body.marque,
+                artisant: req.body.artisan,
+                topProduct: false,
+                description: req.body.description,
+                remise: req.body.remise,
+                creationDate: Date.now()
+            })
+            if (req.files != undefined) {
+        
+                let tabImage = []
+                req.files.forEach(element => {
+                    tabImage.push(element.path)
+                });
+                product.images = tabImage
+            }
+        
+            product.save().then(product => {
+                console.log(product);
+                res.json(product)
+            }).catch(error => {
+        
+                console.log(error);
+                res.status(500).json({
+                    message: "failed to create a produuct"
+                });
+            })
+        }
     })
 }
 exports.getArtisant = (req, res, next) => {
@@ -223,24 +259,50 @@ exports.getArtisant = (req, res, next) => {
 }
 
 exports.updateProfile = async (req, res, next) => {
-    if (req.body.role == 'artisan')
-        var user = await Artisant.findByIdAndUpdate(req.body.user._id, req.body.user, { new: true })
-    else
-        var user = await Admin.findByIdAndUpdate(req.body.user._id, req.body.user, { new: true })
-    res.json(user)
+    jwt.verify(req.token,process.env.JWT_KEY , async (err,data)=>{
+        if(err){
+          res.status(401).json({
+            message:"forbiden"
+          })
+        } 
+        else {
+            if (req.body.role == 'artisan')
+            var user = await Artisant.findByIdAndUpdate(req.body.user._id, req.body.user, { new: true })
+        else
+            var user = await Admin.findByIdAndUpdate(req.body.user._id, req.body.user, { new: true })
+        res.json(user)
+        }
+    })
 }
 
 exports.deleteAccount = async (req, res, next) => {
-    await Artisant.findByIdAndDelete(req.params.id)
-    res.json('deleted')
+    jwt.verify(req.token,process.env.JWT_KEY , async (err,data)=>{
+        if(err){
+          res.status(401).json({
+            message:"forbiden"
+          })
+        } 
+        else {
+            await Artisant.findByIdAndDelete(req.params.id)
+            res.json('deleted')
+        }
+    })
 }
 exports.changePassword = async (req, res, next) => {
-
-    req.body.user.password = encrypt(req.body.user.password)
-    console.log(req.body);
-    if (req.body.role == 'artisan')
-        var user = await Artisant.findByIdAndUpdate(req.body.user._id, req.body.user, { new: true })
-    else
-        var user = await Admin.findByIdAndUpdate(req.body.user._id, req.body.user, { new: true })
-    res.json(user)
+    jwt.verify(req.token,process.env.JWT_KEY , async (err,data)=>{
+        if(err){
+          res.status(401).json({
+            message:"forbiden"
+          })
+        } 
+        else {
+            req.body.user.password = encrypt(req.body.user.password)
+            console.log(req.body);
+            if (req.body.role == 'artisan')
+                var user = await Artisant.findByIdAndUpdate(req.body.user._id, req.body.user, { new: true })
+            else
+                var user = await Admin.findByIdAndUpdate(req.body.user._id, req.body.user, { new: true })
+            res.json(user)
+        }
+    })
 }
