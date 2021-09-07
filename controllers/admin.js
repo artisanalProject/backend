@@ -77,52 +77,61 @@ exports.loginAdmin = (req,res,next)=>{
 
 
 exports.forgotPwd = async (req,res,next)=>{
-    const artisan=  await Artisant.findOne({email:req.query.emailTo});
-    const admin=  await Admin.findOne({email:req.query.emailTo});
-    if(artisan!=null || admin!=null){
-      
-       // Step 1
-   let transporter = nodemailer.createTransport({
-     
-    service: 'gmail',
-    secure:true,
-    auth: {
-        user: process.env.EMAIL || 'mokhleshaj@gmail.com', // TODO: your gmail account
-        pass: process.env.PASSWORD || 'Mokhles 07212' // TODO: your gmail password
-    }
-  });
-  if(admin){
-    var txt="M/Mme "+admin.name+", Voici votre mot de passe : "+decrypt(admin.password)
-    var receiver= admin.email
-  }else{
-    var txt="M/Mme "+artisan.name+", Voici votre mot de passe : "+decrypt(artisan.password)
-    var receiver= artisan.email
-  }
-  // Step 2
-  let mailOptions = {
-    from: 'mokhleshaj@gmail.com', // TODO: email sender
-    to: receiver, // TODO: email receiver
-    subject: 'Art & shop : Mot de passe oublié',
-    text: txt
-  };
-  
-  // Step 3
-  transporter.sendMail(mailOptions, (err, data) => {
-    if (err) {
-      
-      console.log(err);
-        res.json(err);
-    }
-  
-    else{
-      console.log("email sent");
-      res.json("Email sent!")}
-  }); 
-    }
+  jwt.verify(req.token,process.env.JWT_KEY , async(err,data)=>{
+    if(err){
+      res.status(401).json({
+        message:"forbiden"
+      })
+    } 
     else {
-        res.json("account not found")
+      const artisan=  await Artisant.findOne({email:req.query.emailTo});
+      const admin=  await Admin.findOne({email:req.query.emailTo});
+      if(artisan!=null || admin!=null){
+        
+         // Step 1
+     let transporter = nodemailer.createTransport({
+       
+      service: 'gmail',
+      secure:true,
+      auth: {
+          user: process.env.EMAIL || 'mokhleshaj@gmail.com', // TODO: your gmail account
+          pass: process.env.PASSWORD || 'Mokhles 07212' // TODO: your gmail password
+      }
+    });
+    if(admin){
+      var txt="M/Mme "+admin.name+", Voici votre mot de passe : "+decrypt(admin.password)
+      var receiver= admin.email
+    }else{
+      var txt="M/Mme "+artisan.name+", Voici votre mot de passe : "+decrypt(artisan.password)
+      var receiver= artisan.email
     }
+    // Step 2
+    let mailOptions = {
+      from: 'mokhleshaj@gmail.com', // TODO: email sender
+      to: receiver, // TODO: email receiver
+      subject: 'Art & shop : Mot de passe oublié',
+      text: txt
+    };
     
+    // Step 3
+    transporter.sendMail(mailOptions, (err, data) => {
+      if (err) {
+        
+        console.log(err);
+          res.json(err);
+      }
+    
+      else{
+        console.log("email sent");
+        res.json("Email sent!")}
+    }); 
+      }
+      else {
+          res.json("account not found")
+      }
+      
+    }
+  })
     
     
 }
