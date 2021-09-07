@@ -2,7 +2,14 @@ const Product = require('../models/product')
 const fs = require('fs');
 const { json } = require('express');
 exports.addProduct = (req, res, next) => {
-    console.log(req.body);
+    jwt.verify(req.token,process.env.JWT_KEY , (err,data)=>{
+        if(err){
+          res.status(401).json({
+            message:"forbiden"
+          })
+        }
+else {
+
     const product = new Product({
         name: req.body.name,
         price: req.body.prix,
@@ -45,6 +52,9 @@ exports.addProduct = (req, res, next) => {
             message: "failed to create a produuct"
         });
     })
+
+}
+})
 }
 
 exports.getAllProducts = (req, res, next) => {
@@ -74,61 +84,82 @@ exports.getProductById = (req, res, next) => {
         });
 };
 exports.deletProduct = (req, res, next) => {
+    jwt.verify(req.token,process.env.JWT_KEY , (err,data)=>{
+        if(err){
+          res.status(401).json({
+            message:"forbiden"
+          })
+        }
+        else {
+            
     Product.findByIdAndDelete(req.params.id).exec()
-        .then(product => {
-            product.images.forEach(image => {
-                fs.unlink(image, (err) => {
-                    if (err) throw err;
-                });
-            })
-
-            res.status(200).json({ message: "deleted" });
-        })
-        .catch(error => {
-            console.log(error);
-            res.status(500).json({
-                message: "failed to delete"
+    .then(product => {
+        product.images.forEach(image => {
+            fs.unlink(image, (err) => {
+                if (err) throw err;
             });
+        })
+
+        res.status(200).json({ message: "deleted" });
+    })
+    .catch(error => {
+        console.log(error);
+        res.status(500).json({
+            message: "failed to delete"
         });
+    });
+
+        }
+    })
 };
 exports.updateProduct = async(req, res, next) => {
-    oldImages = JSON.parse(req.body.oldImages)
-    let paths = [];
-    if (oldImages.length > 0) {
-        oldImages.forEach(element => {
-            paths.push(element)
-        });
-    }
-    if (req.files) {
-        req.files.forEach(element => {
-            paths.push(element.path)
-        });
-        Product.findByIdAndUpdate(req.params.id, { images: paths }).then(
-            () => {
-                Product.findByIdAndUpdate(req.params.id, req.body).then(
+    jwt.verify(req.token,process.env.JWT_KEY , (err,data)=>{
+        if(err){
+          res.status(401).json({
+            message:"forbiden"
+          })
+        }
+        else {
+            oldImages = JSON.parse(req.body.oldImages)
+            let paths = [];
+            if (oldImages.length > 0) {
+                oldImages.forEach(element => {
+                    paths.push(element)
+                });
+            }
+            if (req.files) {
+                req.files.forEach(element => {
+                    paths.push(element.path)
+                });
+                Product.findByIdAndUpdate(req.params.id, { images: paths }).then(
                     () => {
-                        res.status(200).json({
-                            message: "updated"
-                        });
+                        Product.findByIdAndUpdate(req.params.id, req.body).then(
+                            () => {
+                                res.status(200).json({
+                                    message: "updated"
+                                });
+                            }
+                        ).catch(error => {
+                            console.log(error);
+        
+                            res.status(500).json({
+                                message: "failed to delete"
+                            });
+                        })
                     }
                 ).catch(error => {
                     console.log(error);
-
+        
                     res.status(500).json({
                         message: "failed to delete"
                     });
                 })
-            }
-        ).catch(error => {
-            console.log(error);
-
-            res.status(500).json({
-                message: "failed to delete"
-            });
-        })
+                
         
-
-    }
+            }
+        
+        }
+   })
 }
 exports.findProductByCategory = (req, res, next) => {
     Product.find({ category: req.params.idCategory }).then(products => {
@@ -170,22 +201,42 @@ exports.calculMoyeneRating = (req, res, next) => {
     })
 }
 exports.addToFavoris = (req, res, next) => {
-    Product.findById(req.params.idUser).then(product => {
-        product.topProduct = true
-        product.save()
-        res.json(product)
-    }).catch(err => {
-        res.json(err)
-    })
+    jwt.verify(req.token,process.env.JWT_KEY , (err,data)=>{
+        if(err){
+          res.status(401).json({
+            message:"forbiden"
+          })
+        }
+        else {
+            Product.findById(req.params.idUser).then(product => {
+                product.topProduct = true
+                product.save()
+                res.json(product)
+            }).catch(err => {
+                res.json(err)
+            })
+        }
+   
+})
 }
 exports.RemoveFromFavoris = (req, res, next) => {
-    Product.findById(req.params.idUser).then(product => {
-        product.topProduct = false
-        product.save()
-        res.json(product)
-    }).catch(err => {
-        res.json(err)
-    })
+    jwt.verify(req.token,process.env.JWT_KEY , (err,data)=>{
+        if(err){
+          res.status(401).json({
+            message:"forbiden"
+          })
+        }
+        else {
+            Product.findById(req.params.idUser).then(product => {
+                product.topProduct = false
+                product.save()
+                res.json(product)
+            }).catch(err => {
+                res.json(err)
+            })
+        }
+  
+})
 }
 
 
@@ -213,12 +264,31 @@ exports.verifExistEmailOnReviews = (req, res, next) => {
 }
 
 exports.refuseProduct = async (req, res, next) => {
-    req.body.status = "refused"
-    await Product.findByIdAndUpdate(req.body._id, req.body)
-    res.json("product refused")
+    jwt.verify(req.token,process.env.JWT_KEY , async (err,data)=>{
+        if(err){
+          res.status(401).json({
+            message:"forbiden"
+          })
+        }
+        else {
+            req.body.status = "refused"
+            await Product.findByIdAndUpdate(req.body._id, req.body)
+            res.json("product refused")
+        }
+   
+    })
 }
 exports.acceptProduct = async (req, res, next) => {
+    jwt.verify(req.token,process.env.JWT_KEY , async (err,data)=>{
+        if(err){
+          res.status(401).json({
+            message:"forbiden"
+          })
+        }
+  else {
     req.body.status = "en stock"
     await Product.findByIdAndUpdate(req.body._id, req.body)
     res.json("product accepted")
+  }
+    })
 }

@@ -1,12 +1,12 @@
 const express = require('express')
 const router = express.Router()
 const contactController = require('../controllers/contact')
-
+const jwt = require("../middlewares/jwt")
 router.post('/addContact', contactController.addContact)
-router.get('/getContact', contactController.getContact)
+router.get('/getContact',jwt.ensureToken, contactController.getContact)
 router.post('/verifEmail', contactController.verifExistEmail)
-router.get('/getContactById/:id',contactController.getContactById)
-router.get('/changeStatus/:id',contactController.changeStatus)
+router.get('/getContactById/:id',jwt.ensureToken,contactController.getContactById)
+router.get('/changeStatus/:id',jwt.ensureToken,contactController.changeStatus)
 // router.delete('/deletCategory/:id',categoryController.deleteCategory)
 
 module.exports = router
