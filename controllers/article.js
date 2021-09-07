@@ -1,7 +1,7 @@
 const { json } = require('express')
 const Article = require('../models/article')
 const fs = require('fs');
-
+const jwt = require('jsonwebtoken');
 exports.getAllArticles = async (req,res,next)=>{
     try{
         const articles = await Article.find().exec()
@@ -29,61 +29,88 @@ exports.getAllArticleById = async (req,res,next)=>{
     }
 }
 exports.addArticle = async (req,res,next)=>{
-    try{
-    const article =  new Article({
-        title: req.body.title,
-        content:  req.body.content,
-        image:req.file.path,
-    })
-        await article.save()
-        res.json(article)
-    
-   }
-   catch(err){
-       console.log(err);
-       res.status(500).json(err)
-   }
-    
+    jwt.verify(req.token,process.env.JWT_KEY ,async (err,data)=>{
+        if(err){
+          res.status(401).json({
+            message:"forbiden"
+          })
+        }
+        else {
+            try{
+                const article =  new Article({
+                    title: req.body.title,
+                    content:  req.body.content,
+                    image:req.file.path,
+                })
+                    await article.save()
+                    res.json(article)
+                
+               }
+               catch(err){
+                   console.log(err);
+                   res.status(500).json(err)
+               }
+               
+        }
+    }) 
 }
 
 exports.deleteArticle = async (req,res,next)=>{
- try{
-  const article =   await Article.findById(req.params.id)
-  if(article){
-      await article.deleteOne()
-    fs.unlink(article.image, (err) => {
-        if (err) throw err;
-    });
-    res.status(200).json({message:"deleted successfully"})
-  }
-  
- }
- catch(err){
-     res.status(500).json(err)
- }
+    jwt.verify(req.token,process.env.JWT_KEY , async(err,data)=>{
+        if(err){
+          res.status(401).json({
+            message:"forbiden"
+          })
+        }
+        else {
+            try{
+                const article =   await Article.findById(req.params.id)
+                if(article){
+                    await article.deleteOne()
+                  fs.unlink(article.image, (err) => {
+                      if (err) throw err;
+                  });
+                  res.status(200).json({message:"deleted successfully"})
+                }
+                
+               }
+               catch(err){
+                   res.status(500).json(err)
+               }
+        }
+    })
     
 }
 
 exports.updateArticle = async(req, res, next) => {
-    try{
-        const article = await Article.findById(req.params.id)
-        if(article){
-            
-            article.title =req.body.title
-            article.content = req.body.content
-            article.image = req.file.path
+    jwt.verify(req.token,process.env.JWT_KEY , async(err,data)=>{
+        if(err){
+          res.status(401).json({
+            message:"forbiden"
+          })
+        } 
+        else {
+            try{
+                const article = await Article.findById(req.params.id)
+                if(article){
+                    
+                    article.title =req.body.title
+                    article.content = req.body.content
+                    article.image = req.file.path
+                }
+              await  article.save()
+                res.status(200).json({
+                    article : article,
+                    message:"updated successfully"})
+            }
+           catch(err){
+               console.log(err);
+        res.status(500).json(err)
+           }
+        
+          
         }
-      await  article.save()
-        res.status(200).json({
-            article : article,
-            message:"updated successfully"})
-    }
-   catch(err){
-       console.log(err);
-res.status(500).json(err)
-   }
-
-    
+    })  
 
 }
 exports.addHit = async (req,res,next)=>{
@@ -120,20 +147,38 @@ exports.addComment = async (req,res,next)=>{
 
 
 exports.addToFavoris = (req, res, next) => {
-    Article.findById(req.params.id).then(article => {
-        article.top = true
-        article.save()
-        res.json(article)
-    }).catch(err => {
-        res.json(err)
+    jwt.verify(req.token,process.env.JWT_KEY , async(err,data)=>{
+        if(err){
+          res.status(401).json({
+            message:"forbiden"
+          })
+        } 
+        else {
+            Article.findById(req.params.id).then(article => {
+                article.top = true
+                article.save()
+                res.json(article)
+            }).catch(err => {
+                res.json(err)
+            })
+        }
     })
 }
 exports.removeFromFavoris = (req, res, next) => {
-    Article.findById(req.params.id).then(article => {
-        article.top = false
-        article.save()
-        res.json(article)
-    }).catch(err => {
-        res.json(err)
+    jwt.verify(req.token,process.env.JWT_KEY , async(err,data)=>{
+        if(err){
+          res.status(401).json({
+            message:"forbiden"
+          })
+        } 
+        else {
+            Article.findById(req.params.id).then(article => {
+                article.top = false
+                article.save()
+                res.json(article)
+            }).catch(err => {
+                res.json(err)
+            })
+        }
     })
 }

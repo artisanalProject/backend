@@ -1,5 +1,5 @@
 const Contact = require('../models/contact')
-
+const jwt = require('jsonwebtoken');
 exports.addContact = (req, res, next) => {
     const contact = new Contact(req.body)
     contact.save().then(contact => {
@@ -9,31 +9,50 @@ exports.addContact = (req, res, next) => {
     })
 }
 exports.getContact = (req, res, next) => {
-    Contact.find()
-        .then(contact => {
-            res.status(200).json(contact);
-        })
-        .catch(error => {
-            console.log(error);
-            res.status(500).json({
-                message: "Fetching list of contacts failed!"
-
+    jwt.verify(req.token,process.env.JWT_KEY , (err,data)=>{
+        if(err){
+          res.status(401).json({
+            message:"forbiden"
+          })
+        }
+        else {
+            Contact.find()
+            .then(contact => {
+                res.status(200).json(contact);
+            })
+            .catch(error => {
+                console.log(error);
+                res.status(500).json({
+                    message: "Fetching list of contacts failed!"
+    
+                });
             });
-        });
+        }
+    })
+  
 };
 
 exports.getContactById = (req, res, next) => {
-    Contact.findById(req.params.id)
-        .then(contact => {
-            res.status(200).json(contact);
-        })
-        .catch(error => {
-            console.log(error);
-            res.status(500).json({
-                message: "Fetching list of contacts failed!"
-
+    jwt.verify(req.token,process.env.JWT_KEY , (err,data)=>{
+        if(err){
+          res.status(401).json({
+            message:"forbiden"
+          })
+        }
+        else {
+            Contact.findById(req.params.id)
+            .then(contact => {
+                res.status(200).json(contact);
+            })
+            .catch(error => {
+                console.log(error);
+                res.status(500).json({
+                    message: "Fetching list of contacts failed!"
+    
+                });
             });
-        });
+        }
+    })
 };
 
 exports.changeStatus = async(req, res, next) => {

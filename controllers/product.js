@@ -1,6 +1,10 @@
 const Product = require('../models/product')
 const fs = require('fs');
 const { json } = require('express');
+const jwt = require('jsonwebtoken');
+
+
+
 exports.addProduct = (req, res, next) => {
     jwt.verify(req.token,process.env.JWT_KEY , (err,data)=>{
         if(err){
@@ -84,6 +88,7 @@ exports.getProductById = (req, res, next) => {
         });
 };
 exports.deletProduct = (req, res, next) => {
+    console.log(process.env.JWT_KEY);
     jwt.verify(req.token,process.env.JWT_KEY , (err,data)=>{
         if(err){
           res.status(401).json({
