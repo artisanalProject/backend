@@ -30,15 +30,16 @@ const upload = multer({
   },
   fileFilter: fileFilter
 });
-router.post('/addArtisant',artisantController.addArtisant)
-router.post('/createArtisant',jwt.ensureToken,artisantController.createArtisant)
+router.post('/addArtisant', artisantController.addArtisant)
+router.post('/createArtisant', jwt.ensureToken, artisantController.createArtisant)
 
 router.post('/loginArtisant', artisantController.loginArtisan)
 router.get('/activateAccount/:id', token.ensureToken, artisantController.activateAccount)
 router.get('/NotActivatedAccounts', token.ensureToken, artisantController.NotActivatedAccounts)
-router.post('/RequestProduct', upload.array('images', 50),jwt.ensureToken, artisantController.RequestProduct)
+router.post('/RequestProduct', upload.array('images', 50), jwt.ensureToken, artisantController.RequestProduct)
 router.get('/getArtisant', artisantController.getArtisant)
-router.put('/updateProfile',jwt.ensureToken, artisantController.updateProfile)
-router.delete('/deleteAccount/:id',jwt.ensureToken, artisantController.deleteAccount)
-router.put('/changePassword',jwt.ensureToken, artisantController.changePassword)
+router.put('/updateProfile', jwt.ensureToken, artisantController.updateProfile)
+router.delete('/deleteAccount/:id', jwt.ensureToken, artisantController.deleteAccount)
+router.put('/changePassword', jwt.ensureToken, artisantController.changePassword)
+router.get('/nbArtisansPerMonth', jwt.ensureToken, artisantController.nbArtisansPerMonth)
 module.exports = router
