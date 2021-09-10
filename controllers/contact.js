@@ -9,66 +9,66 @@ exports.addContact = (req, res, next) => {
     })
 }
 exports.getContact = (req, res, next) => {
-    jwt.verify(req.token,process.env.JWT_KEY , (err,data)=>{
-        if(err){
-          res.status(401).json({
-            message:"forbiden"
-          })
+    jwt.verify(req.token, process.env.JWT_KEY, (err, data) => {
+        if (err) {
+            res.status(401).json({
+                message: "forbiden"
+            })
         }
         else {
             Contact.find()
-            .then(contact => {
-                res.status(200).json(contact);
-            })
-            .catch(error => {
-                console.log(error);
-                res.status(500).json({
-                    message: "Fetching list of contacts failed!"
-    
+                .then(contact => {
+                    res.status(200).json(contact);
+                })
+                .catch(error => {
+                    console.log(error);
+                    res.status(500).json({
+                        message: "Fetching list of contacts failed!"
+
+                    });
                 });
-            });
         }
     })
-  
+
 };
 
 exports.getContactById = (req, res, next) => {
-    jwt.verify(req.token,process.env.JWT_KEY , (err,data)=>{
-        if(err){
-          res.status(401).json({
-            message:"forbiden"
-          })
+    jwt.verify(req.token, process.env.JWT_KEY, (err, data) => {
+        if (err) {
+            res.status(401).json({
+                message: "forbiden"
+            })
         }
         else {
             Contact.findById(req.params.id)
-            .then(contact => {
-                res.status(200).json(contact);
-            })
-            .catch(error => {
-                console.log(error);
-                res.status(500).json({
-                    message: "Fetching list of contacts failed!"
-    
+                .then(contact => {
+                    res.status(200).json(contact);
+                })
+                .catch(error => {
+                    console.log(error);
+                    res.status(500).json({
+                        message: "Fetching list of contacts failed!"
+
+                    });
                 });
-            });
         }
     })
 };
 
-exports.changeStatus = async(req, res, next) => {
+exports.changeStatus = async (req, res, next) => {
     try {
         const contact = await Contact.findById(req.params.id)
-        if(contact){
+        if (contact) {
             contact.status = "readed"
             contact.save()
-            res.status(200).json({message:"contact status changed"})
+            res.status(200).json({ message: "contact status changed" })
         }
-        else res.status(400).json({message:"cannot find contact"})
+        else res.status(400).json({ message: "cannot find contact" })
     }
-    catch(e){
+    catch (e) {
         res.status(500).json(e)
     }
-  
+
 };
 
 exports.verifExistEmail = (req, res, next) => {
@@ -80,4 +80,9 @@ exports.verifExistEmail = (req, res, next) => {
                 res.json(false)
         }
     )
+}
+
+exports.nbContacts = async (req, res, next) => {
+    const result = await Contact.find()
+    res.json(result.length)
 }
