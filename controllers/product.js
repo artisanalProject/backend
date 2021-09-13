@@ -116,6 +116,7 @@ exports.deletProduct = (req, res, next) => {
     })
 };
 exports.updateProduct = async (req, res, next) => {
+   
     jwt.verify(req.token, process.env.JWT_KEY, (err, data) => {
         if (err) {
             res.status(401).json({
